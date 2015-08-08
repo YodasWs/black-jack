@@ -1,0 +1,177 @@
+/**
+ * Black Jack
+ * Copyright © 2015 Sam Grundman
+ *
+ * This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+ * http://creativecommons.org/licenses/by-nc-sa/4.0/
+ */
+
+/** CSS Reset **/
+* { -webkit-box-sizing: border-box; box-sizing: border-box; }
+:root { font-family: 'Trebuchet MS', 'Open San', sans-serif; font-size: 1em; }
+html,body { margin: 0; padding: 0; }
+body { position: relative; overflow-x: hidden; background: #4EA24E; }
+body > * {
+	height: 100vh; width: 100vw;
+	margin: 0 auto;
+	position: absolute; top: 0;
+	display: none;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+a:link, a:visited { color: #0000ff; text-decoration: none; }
+a img, a:link img, a:visited img { border: 0 none; }
+
+/** Body on Small Screens **/
+@media (min-width: 480px) {
+	body > * {
+		width: 480px;
+	}
+	main {
+		position: relative;
+		margin: 0 auto;
+	}
+	#about { width: 100%; }
+}
+
+/** Splash Screen **/
+div#intro { display: block; text-align: center; }
+
+/** Main Game Center **/
+main {
+	padding: 0; z-index: 0;
+}
+main > header {
+	display: block; width: 100%;
+	top: 0; left: 0;
+	background: #4ea24e;
+	padding: 0; padding-bottom: 10px;
+	border-bottom: 2px solid transparent;
+}
+
+/** Menu Bar **/
+#menubar { display: block; white-space: nowrap; overflow: hidden; }
+#menubar > h1 {
+	line-height: 3rem; margin: 0; color: white;
+	letter-spacing: 5px; word-spacing: 10px;
+	text-align: center; white-space: nowrap;
+}
+#menubar > a[href="#menu"] {
+	float: left; height: 3rem; width: 3rem; padding: 0.5rem;
+}
+
+/** Main Menu **/
+a[href="#menu"] {
+	display: block; text-indent: -10000px; overflow: hidden;
+	background: center center no-repeat url('../img/menu.png');
+	background-origin: content-box; background-size: contain;
+	width: 30px; height: 30px;
+}
+body > nav {
+	width: 200px; max-width: 80vw;
+	background: white;
+}
+@media (min-width: 500px) {
+	body > nav {
+		width: 250px;
+	}
+}
+@media (min-width: 800px) {
+	body > nav {
+		width: 300px;
+	}
+}
+body > nav > a {
+	display: block; width: 75%; line-height: 2rem;
+	border: 1px solid black; padding: 5px 10px; margin: 10px auto;
+	white-space: nowrap; overflow: hidden;
+	text-decoration: none; color: black;
+}
+body > nav > a:link, body > nav > a:visited {
+	color: black;
+}
+#about > a[href="#main"],
+body > nav > a[href="#main"] {
+	display: block; color: red; text-decoration: none; text-align: center;
+	height: 20px; width: 20px; font-size: 24px; line-height: 20px;
+	border: 0 none; padding: 0; margin: 0;
+	background: white; font-weight: bold;
+	position: absolute;
+}
+#about > a[href="#main"],
+body > nav > a[href="#main"] {
+	position: absolute; top: 0px; right: 0px;
+}
+
+/** Buttons **/
+a[href="#menu"], nav > a {
+	-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+}
+
+/** Modal Background **/
+#modal-bg {
+	z-index: 1;
+	background: black;
+	opacity: .4;
+	position: fixed; top: 0; left: 0;
+	width: 100%; height: 100%;
+	width: 100vw; height: 100vh;
+}
+
+/** About **/
+#about {
+	background: white; height: 200px;
+	padding: 0 1rem; z-index: 2;
+	position: fixed;
+	overflow-y: auto;
+	top: 100%; top: 100vh;
+	opacity: 0;
+	-webkit-transition: top 0.2s, opacity 0.2s;
+	transition: top 0.2s, opacity 0.2s;
+}
+#about.revealed {
+	opacity: 1;
+	top: calc(100% - 200px); top: calc(100vh - 200px);
+	-webkit-transition: top 0.4s, opacity 0.4s;
+	transition: top 0.4s, opacity 0.4s;
+}
+@supports (min-height: min-content) or (min-height: -moz-min-content) or (min-height: -webkit-min-content) {
+	#about {
+		min-height: -webkit-min-content;
+		min-height: -moz-min-content;
+		min-height: min-content;
+	}
+	#about {
+		top: auto; bottom: -200px;
+		-webkit-transition: bottom 0.2s, opacity 0.2s;
+		transition: bottom 0.2s, opacity 0.2s;
+	}
+	#about.revealed {
+		top: auto; bottom: 0px;
+		-webkit-transition: bottom 0.4s, opacity 0.4s;
+		transition: bottom 0.4s, opacity 0.4s;
+	}
+}
+#about > small {
+	display: block; text-align: center;
+}
+#about > div {
+	margin-top: 1.3rem;
+}
+#about > h1 { text-align: center; margin-bottom: 0; }
+#license { max-width: 200px; }
+#version::before { content: 'v'; }
+
+/** For Touch Screen **/
+.touch #about > a[href="#main"],
+body.touch > nav > a[href="#main"] {
+	width: 30px; height: 30px; font-size: 34px; line-height: 30px;
+}
+
+/** For Large Touch Screens **/
+@media (min-width: 800px) {
+	.touch #about > a[href="#main"],
+	body.touch > nav > a[href="#main"] {
+		width: 40px; height: 40px; font-size: 44px; line-height: 40px;
+	}
+}

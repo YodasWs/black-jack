@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Black Jack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans"/>
+<link rel="stylesheet" href="css/base.css"/>
+<script src="cordova.js"></script>
+<script src="cordova_plugins.js"></script>
+<script src="res/zepto.min.js" async></script>
+<script>
+window.dir = 'www/' // asset directory
+// For anything requiring a loaded dependency
+window.onReady = function(cb){
+var c=0,b=function(){if(!c){if(document.readyState=='complete'){cb();c=true}}}
+if(document.readyState=='complete')b()
+else if(Element.prototype.addEventListener)document.addEventListener('readystatechange',b)
+else if(Element.prototype.attachEvent)document.attachEvent('onreadystatechange',b)
+};
+// Wait for document ready
+window.onReady(function() {
+	window.Z = Zepto
+	if (navigator.maxTouchPoints) Z('body').addClass('touch')
+})
+// Load shim for browser testing
+if (!window.cordova) {
+	document.write('<script src="js/www/phonegap-shim.js"><\/script>');
+	document.write('<script src="js/www/web.js"><\/script>');
+}
+// Game Object
+window.game={}
+</script>
+<script src="res/polyfill.js" async></script>
+<script src="js/game.js" async></script>
+<script>
+try{
+	window.platform=navigator.userAgent.match(/\w*(Android|Win|iPod|iPhone|iPad|Mac)\w*/)[0].trim()
+	if (platform.indexOf('Mac') > -1) platform = 'MacIntel'
+	if (platform.indexOf('Win') > -1) platform = 'Win32'
+}catch(e){window.platform='unknown'}
+// Load Android Polyfills and Plugins
+if(platform.indexOf('Android')!=-1) {
+	var a,d=document,t='script',m=d.getElementsByTagName(t)[0]
+	a=d.createElement(t);a.async=1
+	a.src='js/android.js';m.parentNode.insertBefore(a,m)
+	a=d.createElement(t);a.async=1
+	a.src='js/achievements.js';m.parentNode.insertBefore(a,m)
+	a=d.createElement('link');a.rel="stylesheet"
+	a.href='css/android.css';m.parentNode.insertBefore(a,m)
+}
+window.onload = function() {
+	game.load()
+	Z('body > #intro').css({
+		opacity:1
+	}).animate({
+		opacity:0
+	}, 200, function() {
+		$('body > #intro').hide()
+		Z('main').css({
+			display:'block',opacity:0
+		}).animate({
+			opacity:1
+		}, 600, 'ease-out')
+	})
+}
+</script>
+</head>
+<body>
+<div id="intro" style="text-align: center">
+	<h1>Black Jack</h1>
+	<h3 style="color: whitesmoke">Loading&hellip;</h3>
+</div>
+<nav id="menu">
+	<a href="#main">&#xd7;</a>
+	<a href="#about">About</a>
+</nav>
+<main id="main">
+	<header>
+		<div id="menubar">
+			<a href="#menu">Menu</a>
+			<h1>Black Jack</h1>
+		</div>
+	</header>
+</main>
+<div id="modal-bg"></div>
+<small id="about">
+	<a href="#main">&#xd7;</a>
+	<h1>Black Jack</h1>
+	<small id="version"></small>
+	<small rel="copyright">&copy;2015 Sam Grundman</small>
+	<div id="license">
+		<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+			<img alt="Creative Commons License" src="img/cc-by-nc-sa.png" />
+		</a><br />
+		The JavaScript code is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+			target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.<br/>
+		Many images are under public domain, others are under full copyright &copy;2015 Sam Grundman.<br/>
+		For full details, see <a rel="license" href="http://yodasws.github.io/black-jack/LICENSE.html"
+			target="_blank">full license details</a>.
+	</div>
+</small>
+</body>
+</html>
