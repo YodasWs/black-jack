@@ -48,6 +48,22 @@ main > header {
 	padding: 0; padding-bottom: 10px;
 	border-bottom: 2px solid transparent;
 }
+main > input[type="button"][hidden] {
+	display: none;
+}
+main > input[type="button"] {
+	display: inline;
+}
+main > #dealer > .value::before {
+	display: inline; content: 'Dealer:';
+}
+main > #dealer {
+}
+main > #player > .value::before {
+	display: inline; content: 'Player:';
+}
+main > #player {
+}
 
 /** Menu Bar **/
 #menubar { display: block; white-space: nowrap; overflow: hidden; }
@@ -63,7 +79,8 @@ main > header {
 /** Main Menu **/
 a[href="#menu"] {
 	display: block; text-indent: -10000px; overflow: hidden;
-	background: center center no-repeat url('../img/menu.png');
+	background: center center no-repeat url('../img/menu.png'),
+		center center no-repeat url('../app/img/menu.png');
 	background-origin: content-box; background-size: contain;
 	width: 30px; height: 30px;
 }

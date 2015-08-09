@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0"
 	id="ws.yodas.blackjack" xmlns:android="http://schemas.android.com/apk/res/android"
-	versionCode="1" version="0.1.0-beta+20150808">
+	versionCode="1" version="0.1.0-alpha+20150809">
 	<name>Black Jack</name>
 	<description></description>
 	<author href="http://css3design.guru" email="black-jack@yodas.ws">Sam Grundman</author>

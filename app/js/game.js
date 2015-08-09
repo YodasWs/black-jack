@@ -7,7 +7,7 @@
  */
 window.onReady(function() {
 game = Z.extend(game, {
-	v:'0.1.0-beta+20150808',
+	v:'0.1.0-alpha+20150809',
 	load: function() {
 		if (window.localStorage.game) {
 			var savedGame = JSON.parse(window.localStorage.game)
@@ -21,11 +21,14 @@ game = Z.extend(game, {
 					v:game.v
 				}
 			)
-			if (!game.animals) game.animals = { rabbits: 0 }
-			// Update Save File
-			if (!game.animals.rabbits) game.animals.rabbits = 0
 			game.save()
 			$(document).trigger('gameLoaded')
+			// Start Game
+			if (!game.deck || game.deck.lengh < 52)
+				game.shuffleDeck()
+			if (!game.player || !game.player.length || !game.dealer || !game.dealer.length || game.player.length < 2 || game.dealer.length < 2 || game.turn == 'dealer')
+				game.dealHand()
+			game.showGame()
 		}
 	},
 	save: function() {
@@ -35,14 +38,110 @@ game = Z.extend(game, {
 		Z.each(g, function(i) {
 			if (Z.inArray(i, [
 				'achievements',
+				'dealer',
+				'player',
+				'deck',
+				'turn',
 				'v',
 			]) > -1) return 1
 			delete g[i]
 		})
 		// Save
 		window.localStorage.game = JSON.stringify(g)
+	},
+	shuffleDeck: function() {
+		game.deck = []
+		var j,x,i
+		for (j=0; j<8; j++)
+			['h','d','s','c'].forEach(function(s){
+				for (i=1; i<14; i++)
+					game.deck.push(new game.card(i,s))
+			})
+		for(j, x, i = game.deck.length; i; j = Math.floor(Math.random() * i), x = game.deck[--i], game.deck[i] = game.deck[j], game.deck[j] = x);
+		console.log('new deck has ' + game.deck.length + ' cards')
+	},
+	dealHand: function() {
+		game.turn = 'player'
+		game.player = []
+		game.dealer = []
+		for (var i=0; i<2; i++) {
+			game.hit()
+			game.dealer.push(game.deck.pop())
+		}
+		game.showGame()
+	},
+	showGame: function() {
+		console.log('deck has ' + game.deck.length + ' cards remaining')
+		// Display Cards on Table
+		Z('main .card').remove()
+		console.log('It\'s the ' + game.turn + '\'s turn')
+		game.dealer.forEach(function(c,i) {
+			if (i > 0 && game.turn != 'dealer') return
+			Z('main > #dealer').append('<div class="card">' + c.face)
+		})
+		game.player.forEach(function(c) {
+			Z('main > #player').append('<div class="card">' + c.face)
+		})
+		if (game.turn == 'player') {
+			Z('main > input[type="button"]').removeAttr('hidden')
+			if (game.player.length >= 5)
+				Z('#hit').attr('hidden', 'hidden')
+		}
+		var val = game.handValue(game.player)
+		Z('main > #player > .value').text(val)
+		if (val > 21) {
+			game.bust()
+		}
+		game.save()
+	},
+	hit: function() {
+		console.log('player hits')
+		if (game.player.length < 5)
+			game.player.push(game.deck.pop())
+		console.log('Player has ' + game.player.length + ' cards')
+		if (game.player.length >= 5)
+			game.stand()
+		game.showGame()
+	},
+	stand: function() {
+		game.turn = 'dealer'
+		Z('main > input[type="button"]').attr('hidden', 'hidden')
+		game.showGame()
+	},
+	bust: function() {
+		alert('You bust!')
+		game.dealHand()
+	},
+	handValue: function(hand) {
+		if (!hand || !hand.length) return 0
+		var v = 0
+		hand.forEach(function(c) {
+			v += c.num
+		})
+		return v
 	}
 })
+game.card = function(num, suit) {
+	this.suit = suit
+	this.num = (num > 10 ? 10 : num)
+	switch (num) {
+		case 1:
+			this.face = 'A'
+			break;
+		case 11:
+			this.face = 'J'
+			break;
+		case 12:
+			this.face = 'Q'
+			break;
+		case 13:
+			this.face = 'K'
+			break;
+		default:
+			this.face = '' + num
+	}
+	this.face += ' ' + suit
+}
 
 // Close the Game Menu
 game.closeMenu = function(e,t) {
@@ -166,10 +265,9 @@ Z(document).on(evtClick, '#about a[href="#main"]', game.closeAbout)
 Z(document).on(evtClick, 'a[href="#about"]', game.openAbout)
 Z(document).on(evtClick, 'a[href="#menu"]', game.openMenu)
 Z(document).on(evtClick, '#modal-bg', game.hideModals)
-
-// Pause/Resume Game
-Z(document).on('pause', function() { game.save(); clearTimeout(game.toAuto) })
-Z(document).on('resume', game.autoClick)
+Z(document).on(evtClick, '#stand', game.stand)
+Z(document).on(evtClick, '#fold', game.dealHand)
+Z(document).on(evtClick, '#hit', game.hit)
 
 // Keyboard Support
 Z(document).on('keydown', function(e) {
@@ -181,9 +279,11 @@ Z(document).on('keydown', function(e) {
 	}
 })
 
-// Mobile Button Support
+// Mobile Support
 Z(document).on('backbutton', game.closeAll)
 Z(document).on('menubutton', game.openMenu)
+Z(document).on('pause', function() { game.save() })
+Z(document).on('resume', function() { })
 
 // Keep Phone Awake
 if (window.plugins && window.plugins.insomnia)
