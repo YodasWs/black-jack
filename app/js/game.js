@@ -24,10 +24,15 @@ game = Z.extend(game, {
 			game.save()
 			$(document).trigger('gameLoaded')
 			// Start Game
-			if (!game.deck || game.deck.lengh < 52)
+			if (!game.deck || game.deck.length < 52)
 				game.shuffleDeck()
-			if (!game.player || !game.player.length || !game.dealer || !game.dealer.length || game.player.length < 2 || game.dealer.length < 2 || game.turn == 'dealer')
+			try {
+				if (!game.player || !game.player.length || !game.dealer || !game.dealer.length || game.player.length < 2 || game.dealer.length < 2 || game.turn == 'dealer')
+					game.dealHand()
+			} catch (e) {
+				game.shuffleDeck()
 				game.dealHand()
+			}
 			game.showGame()
 		}
 	},
@@ -65,6 +70,8 @@ game = Z.extend(game, {
 		game.player = []
 		game.dealer = []
 		for (var i=0; i<2; i++) {
+			if (!game.deck || game.deck.length < 2)
+				game.shuffleDeck()
 			game.hit()
 			game.dealer.push(game.deck.pop())
 		}
@@ -95,6 +102,8 @@ game = Z.extend(game, {
 		game.save()
 	},
 	hit: function() {
+		if (!game.deck || game.deck.length < 1)
+			game.shuffleDeck()
 		console.log('player hits')
 		if (game.player.length < 5)
 			game.player.push(game.deck.pop())
